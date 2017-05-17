@@ -36,7 +36,7 @@ public class LeaveApplication implements Serializable {
 	@Column(name="LEAVE_TYPE_ID")
 	private int leaveTypeId;
 	@NotNull
-	@Column(name="LEAVE_STATUS_ID",insertable=false, updatable = false, nullable = false, columnDefinition = "int(11) default '1'")
+	@Column(name="LEAVE_STATUS_ID",columnDefinition = "int(11) default '1'")
 	private int leaveStatusId;
 	
 	@Column(name="NO_OF_DAYS")

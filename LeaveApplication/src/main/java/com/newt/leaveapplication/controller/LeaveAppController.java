@@ -40,8 +40,29 @@ public class LeaveAppController {
 	}
 	@RequestMapping(method=RequestMethod.PUT,produces = "application/json")
 	public LeaveApplication updateLeave(LeaveApplication leaveApp){
-		return leaveAppService.updateLeave(leaveApp);
-		
+        
+		String serviceName = "localhost:8768";
+		String url = "http://" + serviceName;
+		int noofleave=leaveApp.getNoOfDays();
+		if(leaveApp.getLeaveStatusId()==2){
+			LeaveBalance balanceList[] = null;
+			balanceList = restTemplate.getForObject(url + "/leavebalance/get/byempId/{empId}", LeaveBalance[].class,leaveApp.getEmpId());
+			for (int i = 0; i < balanceList.length; i++) {
+				System.out.println(balanceList[i]);
+				LeaveBalance bal=balanceList[i];
+				int oldleavecount=bal.getLeaveCount();
+				int newLeaveCount=oldleavecount-noofleave;
+				if(leaveApp.getLeaveTypeId()==bal.getLeaveTypeId()){
+					bal.setLeaveCount(newLeaveCount);
+					restTemplate.put(url + "/leavebalance/update", bal);}
+
+			}
+
+
+
+		}
+		LeaveApplication leave= leaveAppService.updateLeave(leaveApp);
+		return leave;
 	}
 	@RequestMapping(method=RequestMethod.DELETE,value="/delete/{leaveAppId}",produces = "application/json")
 	public void deleteLeaveApplication(@PathVariable("leaveAppId")int leaveAppId){
